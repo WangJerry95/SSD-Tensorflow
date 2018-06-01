@@ -40,7 +40,7 @@ tf.app.flags.DEFINE_float(
 # General Flags.
 # =========================================================================== #
 tf.app.flags.DEFINE_string(
-    'train_dir', '/tmp/tfmodel/',
+    'train_dir', '/logs/',
     'Directory where checkpoints and event logs are written to.')
 tf.app.flags.DEFINE_integer('num_clones', 1,
                             'Number of model clones to deploy.')
@@ -130,7 +130,7 @@ tf.app.flags.DEFINE_float(
 # Dataset Flags.
 # =========================================================================== #
 tf.app.flags.DEFINE_string(
-    'dataset_name', 'imagenet', 'The name of the dataset to load.')
+    'dataset_name', 'pascal_voc', 'The name of the dataset to load.')
 tf.app.flags.DEFINE_integer(
     'num_classes', 21, 'Number of classes to use in the dataset.')
 tf.app.flags.DEFINE_string(
@@ -269,10 +269,11 @@ def main(_):
 
             # Construct SSD network.
             arg_scope = ssd_net.arg_scope(weight_decay=FLAGS.weight_decay,
-                                          data_format=DATA_FORMAT)
+                                          data_format=DATA_FORMAT,
+                                          is_training=True)
             with slim.arg_scope(arg_scope):
                 predictions, localisations, logits, end_points = \
-                    ssd_net.net(b_image, is_training=True)
+                    ssd_net.net(b_image, is_training=True, scope='std_32')
             # Add loss function.
             ssd_net.losses(logits, localisations,
                            b_gclasses, b_glocalisations, b_gscores,

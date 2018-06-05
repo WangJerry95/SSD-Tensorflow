@@ -63,7 +63,7 @@ tf.app.flags.DEFINE_integer(
     'save_interval_secs', 600,
     'The frequency with which the model is saved, in seconds.')
 tf.app.flags.DEFINE_float(
-    'gpu_memory_fraction', 0.8, 'GPU memory fraction to use.')
+    'gpu_memory_fraction', 0.9, 'GPU memory fraction to use.')
 
 # =========================================================================== #
 # Optimization Flags.
@@ -132,7 +132,7 @@ tf.app.flags.DEFINE_float(
 tf.app.flags.DEFINE_string(
     'dataset_name', 'pascal_voc', 'The name of the dataset to load.')
 tf.app.flags.DEFINE_integer(
-    'num_classes', 21, 'Number of classes to use in the dataset.')
+    'num_classes', 2, 'Number of classes to use in the dataset.')
 tf.app.flags.DEFINE_string(
     'dataset_split_name', 'train', 'The name of the train/test split.')
 tf.app.flags.DEFINE_string(
@@ -237,6 +237,7 @@ def main(_):
                 image_preprocessing_fn(image, glabels, gbboxes,
                                        out_shape=ssd_shape,
                                        data_format=DATA_FORMAT)
+            image = tf.reduce_sum(image, axis=0, keep_dims=True)
             # Encode groundtruth labels and bboxes.
             gclasses, glocalisations, gscores = \
                 ssd_net.bboxes_encode(glabels, gbboxes, ssd_anchors)

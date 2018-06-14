@@ -58,10 +58,18 @@ import xml.etree.ElementTree as ET
 from datasets.dataset_utils import int64_feature, float_feature, bytes_feature
 from datasets.pascalvoc_common import VOC_LABELS
 
+KITTI_LABELS = {
+    'none': (0, 'Background'),
+    'Car': (1, 'Vehicle'),
+    'Pedestrian': (2, 'People'),
+    'Cyclist': (3, 'People'),
+}
+
 # Original dataset organisation.
 DIRECTORY_ANNOTATIONS = 'Annotations/'
 DIRECTORY_IMAGES = 'JPEGImages/'
-
+DIRECTORY_TRAIN_TXT = 'ImageSets/Main/train.txt'
+DIRECTORY_VAL_TXT = 'ImageSets/Main/val.txt'
 # TFRecords convertion parameters.
 RANDOM_SEED = 4242
 SAMPLES_PER_FILES = 200
@@ -79,8 +87,8 @@ def _process_image(directory, name):
       width: integer, image width in pixels.
     """
     # Read the image file.
-    filename = directory + DIRECTORY_IMAGES + name + '.jpg'
-    image_data = tf.gfile.FastGFile(filename, 'r').read()
+    filename = directory + DIRECTORY_IMAGES + name + '.png'
+    image_data = tf.gfile.FastGFile(filename, 'rb').read()
 
     # Read the XML annotation file.
     filename = os.path.join(directory, DIRECTORY_ANNOTATIONS, name + '.xml')
@@ -100,7 +108,7 @@ def _process_image(directory, name):
     truncated = []
     for obj in root.findall('object'):
         label = obj.find('name').text
-        labels.append(int(VOC_LABELS[label][0]))
+        labels.append(int(KITTI_LABELS[label][0]))
         labels_text.append(label.encode('ascii'))
 
         if obj.find('difficult'):
@@ -195,8 +203,11 @@ def run(dataset_dir, output_dir, name='voc_train', shuffling=False):
         tf.gfile.MakeDirs(dataset_dir)
 
     # Dataset filenames, and shuffling.
-    path = os.path.join(dataset_dir, DIRECTORY_ANNOTATIONS)
-    filenames = sorted(os.listdir(path))
+    # path = os.path.join(dataset_dir, DIRECTORY_ANNOTATIONS)
+    # filenames = sorted(os.listdir(path))
+    path = os.path.join(dataset_dir, DIRECTORY_TRAIN_TXT)
+    with open(path, "r") as f:
+        filenames = [filename.strip() for filename in f.readlines()]
     if shuffling:
         random.seed(RANDOM_SEED)
         random.shuffle(filenames)
@@ -214,7 +225,7 @@ def run(dataset_dir, output_dir, name='voc_train', shuffling=False):
                 sys.stdout.flush()
 
                 filename = filenames[i]
-                img_name = filename[:-4]
+                img_name = filename
                 _add_to_tfrecord(dataset_dir, img_name, tfrecord_writer)
                 i += 1
                 j += 1

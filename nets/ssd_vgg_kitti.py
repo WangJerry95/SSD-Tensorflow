@@ -39,7 +39,7 @@ from nets import custom_layers
 from nets import ssd_common
 from nets import ssd_vgg_300
 
-slim = tf.contrib.slim
+from tensorflow.contrib import slim
 
 
 # =========================================================================== #
@@ -77,24 +77,20 @@ class SSDNet(object):
         img_shape=(600, 150),
         num_classes=4,
         no_annotation_label=4,
-        feat_layers=['block4', 'block7', 'block8', 'block9', 'block10', 'block11', 'block12'],
-        feat_shapes=[(64, 64), (32, 32), (16, 16), (8, 8), (4, 4), (2, 2), (1, 1)],
+        feat_layers=['block4', 'block7', 'block8', 'block9', 'block10'],
+        feat_shapes=[(75, 19), (38, 10), (19, 5), (10, 3), (4, 1)],
         anchor_size_bounds=[0.10, 0.90],
-        anchor_sizes=[(20.48, 51.2),
-                      (51.2, 133.12),
-                      (133.12, 215.04),
-                      (215.04, 296.96),
-                      (296.96, 378.88),
-                      (378.88, 460.8),
-                      (460.8, 542.72)],
+        anchor_sizes=[(21., 45.),
+                      (45., 99.),
+                      (99., 153.),
+                      (153., 207.),
+                      (207., 261.)],
         anchor_ratios=[[2, .5],
                        [2, .5, 3, 1./3],
                        [2, .5, 3, 1./3],
                        [2, .5, 3, 1./3],
-                       [2, .5, 3, 1./3],
-                       [2, .5],
                        [2, .5]],
-        anchor_steps=[8, 16, 32, 64, 128, 256, 512],
+        anchor_steps=[8, 16, 32, 64, 128],
         anchor_offset=0.5,
         normalizations=[20, -1, -1, -1, -1, -1, -1],
         prior_scaling=[0.1, 0.1, 0.2, 0.2]
@@ -240,7 +236,7 @@ def layer_shape(layer):
 
 def ssd_size_bounds_to_values(size_bounds,
                               n_feat_layers,
-                              img_shape=(512, 512)):
+                              img_shape=(600, 150)):
     """Compute the reference sizes of the anchor boxes from relative bounds.
     The absolute values are measured in pixels, based on the network
     default size (512 pixels).
@@ -422,24 +418,9 @@ def ssd_net(inputs,
         end_point = 'block10'
         with tf.variable_scope(end_point):
             net = slim.conv2d(net, 128, [1, 1], scope='conv1x1')
-            net = custom_layers.pad2d(net, pad=(1, 1))
             net = slim.conv2d(net, 256, [3, 3], stride=2, scope='conv3x3', padding='VALID')
         end_points[end_point] = net
-        end_point = 'block11'
-        with tf.variable_scope(end_point):
-            net = slim.conv2d(net, 128, [1, 1], scope='conv1x1')
-            net = custom_layers.pad2d(net, pad=(1, 1))
-            net = slim.conv2d(net, 256, [3, 3], stride=2, scope='conv3x3', padding='VALID')
-        end_points[end_point] = net
-        end_point = 'block12'
-        with tf.variable_scope(end_point):
-            net = slim.conv2d(net, 128, [1, 1], scope='conv1x1')
-            net = custom_layers.pad2d(net, pad=(1, 1))
-            net = slim.conv2d(net, 256, [4, 4], scope='conv4x4', padding='VALID')
-            # Fix padding to match Caffe version (pad=1).
-            # pad_shape = [(i-j) for i, j in zip(layer_shape(net), [0, 1, 1, 0])]
-            # net = tf.slice(net, [0, 0, 0, 0], pad_shape, name='caffe_pad')
-        end_points[end_point] = net
+
 
         # Prediction and localisations layers.
         predictions = []

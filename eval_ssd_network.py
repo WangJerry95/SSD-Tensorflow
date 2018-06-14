@@ -58,7 +58,7 @@ tf.app.flags.DEFINE_integer(
 tf.app.flags.DEFINE_integer(
     'eval_image_size', None, 'Eval image size.')
 tf.app.flags.DEFINE_boolean(
-    'remove_difficult', True, 'Remove difficult objects from evaluation.')
+    'remove_difficult', False, 'Remove difficult objects from evaluation.')
 
 # =========================================================================== #
 # Main evaluation flags.
@@ -97,7 +97,7 @@ tf.app.flags.DEFINE_float(
     'The decay to use for the moving average.'
     'If left as None, then moving averages are not used.')
 tf.app.flags.DEFINE_float(
-    'gpu_memory_fraction', 0.9, 'GPU memory fraction to use.')
+    'gpu_memory_fraction', 0.6, 'GPU memory fraction to use.')
 tf.app.flags.DEFINE_boolean(
     'wait_for_checkpoints', False, 'Wait for new checkpoints in the eval loop.')
 

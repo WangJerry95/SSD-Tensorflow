@@ -1,0 +1,13 @@
+python train_ssd_network.py --train_dir=./logs/log_finetune/ \
+	--dataset_dir=./datasets/KITTItfrecords/ \
+	--dataset_name=kitti \
+	--dataset_split=train \
+	--model_name=ssd_kitti_vgg \
+	--checkpoint_path=./logs/model.ckpt-19517 \
+	--save_summaries_secs=30 \
+	--save_interval_secs=300 \
+	--weight_decay=0.0005 \
+	--optimizer=adam \
+	--learning_rate=0.00005 \
+	--batch_size=32 \
+	--num_classes=4

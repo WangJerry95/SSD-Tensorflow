@@ -1,1 +1,9 @@
-python eval_ssd_network.py --eval_dir=./logs/eval/ --dataset_dir=./datasets/KITTItfrecords --dataset_name=kitti --dataset_split_name=test --model_name=ssd_kitti_vgg --checkpoint_path=./logs --batch_size=1 --wait_for_checkpoints=True --max_num_batches=500
+python eval_ssd_network.py --eval_dir=./logs/eval/ \
+	--dataset_dir=./datasets/KITTItfrecords \
+	--dataset_name=kitti \
+	--dataset_split_name=test \
+	--model_name=ssd_kitti_vgg \
+	--checkpoint_path=./logs/ \
+	--batch_size=1 \
+	--wait_for_checkpoints=True \
+	--max_num_batches=500

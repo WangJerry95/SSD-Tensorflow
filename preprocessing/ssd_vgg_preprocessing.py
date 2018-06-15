@@ -176,10 +176,10 @@ def distort_color(image, color_ordering=0, fast_mode=True, scope=None):
 def distorted_bounding_box_crop(image,
                                 labels,
                                 bboxes,
-                                min_object_covered=0.3,
-                                aspect_ratio_range=(0.9, 1.1),
-                                area_range=(0.1, 1.0),
-                                max_attempts=200,
+                                min_object_covered=0.5,
+                                aspect_ratio_range=(3.8, 4.1),
+                                area_range=(0.3, 1.0),
+                                max_attempts=100,
                                 clip_bboxes=True,
                                 scope=None):
     """Generates cropped_image using a one of the bboxes randomly distorted.

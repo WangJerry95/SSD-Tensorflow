@@ -1,1 +1,17 @@
-python train_ssd_network.py --train_dir=./logs/ --dataset_dir=./datasets/KITTItfrecords/ --dataset_name=kitti --dataset_split=train --model_name=ssd_kitti_vgg --checkpoint_path=./checkpoints/vgg_16.ckpt --checkpoint_model_scope=vgg_16 --checkpoint_exclude_scopes=ssd_kitti_vgg/conv6,ssd_kitti_vgg/conv7,ssd_kitti_vgg/block8,ssd_kitti_vgg/block9,ssd_kitti_vgg/block10,ssd_kitti_vgg/block4_box,ssd_kitti_vgg/block7_box,ssd_kitti_vgg/block8_box,ssd_kitti_vgg/block9_box,ssd_kitti_vgg/block10_box --trainable_scopes=ssd_kitti_vgg/conv6,ssd_kitti_vgg/conv7,ssd_kitti_vgg/block8,ssd_kitti_vgg/block9,ssd_kitti_vgg/block10,ssd_kitti_vgg/block4_box,ssd_kitti_vgg/block7_box,ssd_kitti_vgg/block8_box,ssd_kitti_vgg/block9_box,ssd_kitti_vgg/block10_box --save_summaries_secs=30 --save_interval_secs=300 --weight_decay=0.0005 --optimizer=adam --learning_rate=0.0001 --batch_size=32 --num_classes=4
+python train_ssd_network.py --train_dir=./logs/ \
+--dataset_dir=./datasets/KITTItfrecords/ \
+--dataset_name=kitti \
+--dataset_split=train \
+--model_name=ssd_kitti_vgg \
+--checkpoint_path=./checkpoints/vgg_16.ckpt \
+--checkpoint_model_scope=vgg_16 \
+--checkpoint_exclude_scopes=ssd_kitti_vgg/conv6,ssd_kitti_vgg/conv7,ssd_kitti_vgg/block8,ssd_kitti_vgg/block9,ssd_kitti_vgg/block10,ssd_kitti_vgg/block4_box,ssd_kitti_vgg/block7_box,ssd_kitti_vgg/block8_box,ssd_kitti_vgg/block9_box,ssd_kitti_vgg/block10_box \
+--trainable_scopes=ssd_kitti_vgg/conv6,ssd_kitti_vgg/conv7,ssd_kitti_vgg/block8,ssd_kitti_vgg/block9,ssd_kitti_vgg/block10,ssd_kitti_vgg/block4_box,ssd_kitti_vgg/block7_box,ssd_kitti_vgg/block8_box,ssd_kitti_vgg/block9_box,ssd_kitti_vgg/block10_box \
+--save_summaries_secs=30 \
+--save_interval_secs=300 \
+--weight_decay=0.0005 \
+--optimizer=adam \
+--learning_rate=0.0001 \
+--batch_size=32 \
+--num_classes=4 \
+--max_number_of_steps=40000

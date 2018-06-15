@@ -63,7 +63,7 @@ tf.app.flags.DEFINE_boolean(
 # Main evaluation flags.
 # =========================================================================== #
 tf.app.flags.DEFINE_integer(
-    'num_classes', 21, 'Number of classes to use in the dataset.')
+    'num_classes', 4, 'Number of classes to use in the dataset.')
 tf.app.flags.DEFINE_integer(
     'batch_size', 1, 'The number of samples in each batch.')
 tf.app.flags.DEFINE_integer(
@@ -104,6 +104,15 @@ tf.app.flags.DEFINE_boolean(
 FLAGS = tf.app.flags.FLAGS
 
 
+def flatten(x):
+    result = []
+    for el in x:
+        if isinstance(el, tuple):
+            result.extend(flatten(el))
+        else:
+            result.append(el)
+    return result
+
 def main(_):
     if not FLAGS.dataset_dir:
         raise ValueError('You must supply the dataset directory with --dataset_dir')
@@ -143,7 +152,7 @@ def main(_):
                     dataset,
                     common_queue_capacity=2 * FLAGS.batch_size,
                     common_queue_min=FLAGS.batch_size,
-                    shuffle=False)
+                    shuffle=True)
             # Get for SSD network: image, labels, bboxes.
             [image, shape, glabels, gbboxes] = provider.get(['image', 'shape',
                                                              'object/label',
@@ -184,7 +193,7 @@ def main(_):
         arg_scope = ssd_net.arg_scope(data_format=DATA_FORMAT)
         with slim.arg_scope(arg_scope):
             predictions, localisations, logits, end_points = \
-                ssd_net.net(b_image, is_training=False)
+                ssd_net.net(b_image, is_training=False, scope='ssd_kitti_vgg')
         # Add losses functions.
         ssd_net.losses(logits, localisations,
                        b_gclasses, b_glocalisations, b_gscores)
@@ -315,7 +324,7 @@ def main(_):
                 checkpoint_path=checkpoint_path,
                 logdir=FLAGS.eval_dir,
                 num_evals=num_batches,
-                eval_op=list(names_to_updates.values()),
+                eval_op=flatten(list(names_to_updates.values())),
                 variables_to_restore=variables_to_restore,
                 session_config=config)
             # Log time spent.
@@ -334,7 +343,7 @@ def main(_):
                 checkpoint_dir=checkpoint_path,
                 logdir=FLAGS.eval_dir,
                 num_evals=num_batches,
-                eval_op=list(names_to_updates.values()),
+                eval_op=flatten(list(names_to_updates.values())),
                 variables_to_restore=variables_to_restore,
                 eval_interval_secs=60,
                 max_number_of_evaluations=np.inf,

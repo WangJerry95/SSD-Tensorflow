@@ -272,7 +272,7 @@ def main(_):
                                           data_format=DATA_FORMAT)
             with slim.arg_scope(arg_scope):
                 predictions, localisations, logits, end_points = \
-                    ssd_net.net(b_image, is_training=True)
+                    ssd_net.net(b_image, is_training=True, scope='ssd_kitti_vgg')
             # Add loss function.
             ssd_net.losses(logits, localisations,
                            b_gclasses, b_glocalisations, b_gscores,

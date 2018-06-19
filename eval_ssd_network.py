@@ -193,7 +193,7 @@ def main(_):
         arg_scope = ssd_net.arg_scope(data_format=DATA_FORMAT)
         with slim.arg_scope(arg_scope):
             predictions, localisations, logits, end_points = \
-                ssd_net.net(b_image, is_training=False, scope='ssd_kitti_vgg')
+                ssd_net.net(b_image, is_training=False, scope=FLAGS.model_name)
         # Add losses functions.
         ssd_net.losses(logits, localisations,
                        b_gclasses, b_glocalisations, b_gscores)
@@ -348,7 +348,7 @@ def main(_):
                 eval_interval_secs=60,
                 max_number_of_evaluations=np.inf,
                 session_config=config,
-                timeout=None)
+                timeout=600)
 
 
 if __name__ == '__main__':

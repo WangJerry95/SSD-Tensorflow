@@ -14,4 +14,4 @@ python train_ssd_network.py --train_dir=./logs/ \
 --learning_rate=0.0001 \
 --batch_size=32 \
 --num_classes=4 \
---max_number_of_steps=40000
+--max_number_of_steps=50000

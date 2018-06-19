@@ -1,9 +1,10 @@
-python eval_ssd_network.py --eval_dir=./logs/eval/ \
+python eval_ssd_network.py --eval_dir=./logs/eval_finetune/ \
 	--dataset_dir=./datasets/KITTItfrecords \
 	--dataset_name=kitti \
+	--num_classes=4 \
 	--dataset_split_name=test \
 	--model_name=ssd_kitti_vgg \
-	--checkpoint_path=./logs/ \
+	--checkpoint_path=./logs/log_finetune \
 	--batch_size=1 \
 	--wait_for_checkpoints=True \
 	--max_num_batches=500

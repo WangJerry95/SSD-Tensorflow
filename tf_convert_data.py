@@ -28,6 +28,7 @@ import tensorflow as tf
 
 from datasets import pascalvoc_to_tfrecords
 from datasets import std_to_tfrecords
+from datasets import plane_to_tfrecords
 
 FLAGS = tf.app.flags.FLAGS
 
@@ -55,6 +56,8 @@ def main(_):
         pascalvoc_to_tfrecords.run(FLAGS.dataset_dir, FLAGS.output_dir, FLAGS.output_name)
     if FLAGS.dataset_name == 'std':
         std_to_tfrecords.run(FLAGS.dataset_dir, FLAGS.output_dir, FLAGS.output_name, shuffling=True)
+    if FLAGS.dataset_name == 'plane':
+        plane_to_tfrecords.run(FLAGS.dataset_dir, FLAGS.output_dir, FLAGS.output_name, shuffling=True)
     else:
         raise ValueError('Dataset [%s] was not recognized.' % FLAGS.dataset_name)
 

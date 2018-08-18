@@ -69,7 +69,7 @@ SSDParams = namedtuple('SSDParameters', ['img_shape',
                                          'no_annotation_label',
                                          'feat_layers',
                                          'feat_shapes',
-                                         'anchor_size_bounds',
+                                        #'anchor_size_bounds',
                                          'anchor_sizes',
                                          'anchor_ratios',
                                          'anchor_steps',
@@ -92,27 +92,27 @@ class SSDNet(object):
     The default image size used to train this network is 300x300.
     """
     default_params = SSDParams(
-        img_shape=(300, 300),
+        img_shape=(512, 512),
         num_classes=2,
         no_annotation_label=21,  #deprecated
         feat_layers=['block3', 'block4'],
-        feat_shapes=[(75, 75), (38, 38)],
-        anchor_size_bounds=[0.15, 0.90],
+        feat_shapes=[(128, 128), (64, 64)],
+        # anchor_size_bounds=[0.15, 0.90],
         # anchor_size_bounds=[0.20, 0.90],
-        anchor_sizes=[(21., 45.),
-                      (45., 99.)],
+        anchor_sizes=[(5., 15.),
+                      (15., 50.)],
         # anchor_sizes=[(30., 60.),
         #               (60., 111.),
         #               (111., 162.),
         #               (162., 213.),
         #               (213., 264.),
         #               (264., 315.)],
-        anchor_ratios=[[2, .5],
-                       [2, .5]],
+        anchor_ratios=[[2, .5, 3, 1./3],
+                       [2, .5, 3, 1./3]],
         anchor_steps=[4, 8],
         anchor_offset=0.5,
         normalizations=[20, -1],  # l2 normalize if > 0
-        prior_scaling=[0.1, 0.1, 0.2, 0.2]
+        prior_scaling=[0.1, 0.1, 0.02, 0.02]
         )
 
     def __init__(self, params=None):
@@ -441,19 +441,19 @@ def ssd_net(inputs,
     end_points = {}
     with tf.variable_scope(scope, 'ssd_vgg_300', [inputs], reuse=reuse):
         # Original VGG-16 blocks.
-        net = slim.repeat(inputs, 2, slim.conv2d, 32, [3, 3], scope='conv1')
+        net = slim.repeat(inputs, 3, slim.conv2d, 32, [3, 3], scope='conv1')
         end_points['block1'] = net
         net = slim.max_pool2d(net, [2, 2], scope='pool1')
         # Block 2.
-        net = slim.repeat(net, 2, slim.conv2d, 64, [3, 3], scope='conv2')
+        net = slim.repeat(net, 3, slim.conv2d, 48, [3, 3], scope='conv2')
         end_points['block2'] = net
         net = slim.max_pool2d(net, [2, 2], scope='pool2')
         # Block 3.
-        net = slim.repeat(net, 3, slim.conv2d, 128, [3, 3], scope='conv3')
+        net = slim.repeat(net, 3, slim.conv2d, 64, [3, 3], scope='conv3')
         end_points['block3'] = net
         net = slim.max_pool2d(net, [2, 2], scope='pool3')
         # Block 4.
-        net = slim.repeat(net, 3, slim.conv2d, 256, [3, 3], scope='conv4')
+        net = slim.repeat(net, 2, slim.conv2d, 64, [3, 3], scope='conv4')
         end_points['block4'] = net
         # net = slim.max_pool2d(net, [2, 2], scope='pool4')
         # # Block 5.
@@ -527,7 +527,10 @@ def ssd_arg_scope(weight_decay=0.0005, is_training=True, data_format='NHWC'):
                         activation_fn=tf.nn.relu,
                         weights_regularizer=slim.l2_regularizer(weight_decay),
                         weights_initializer=tf.contrib.layers.xavier_initializer(),
-                        biases_initializer=tf.zeros_initializer()):
+                        biases_initializer=tf.zeros_initializer(),
+                        normalizer_fn=slim.batch_norm,
+                        normalizer_params={'is_training': is_training, 'decay': 0.95, 'data_format': data_format}
+                        ):
         with slim.arg_scope([slim.conv2d, slim.max_pool2d],
                             padding='SAME',
                             data_format=data_format):

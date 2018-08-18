@@ -42,7 +42,7 @@ _B_MEAN = 104.
 BBOX_CROP_OVERLAP = 0.5         # Minimum overlap to keep a bbox after cropping.
 MIN_OBJECT_COVERED = 0.25
 CROP_RATIO_RANGE = (0.6, 1.67)  # Distortion ratio during cropping.
-EVAL_SIZE = (300, 300)
+EVAL_SIZE = (512, 512)
 
 
 def tf_image_whitened(image, means=[_R_MEAN, _G_MEAN, _B_MEAN]):
@@ -178,8 +178,8 @@ def distorted_bounding_box_crop(image,
                                 bboxes,
                                 min_object_covered=0.3,
                                 aspect_ratio_range=(0.9, 1.1),
-                                area_range=(0.1, 1.0),
-                                max_attempts=200,
+                                area_range=(0.25, 1.0),
+                                max_attempts=400,
                                 clip_bboxes=True,
                                 scope=None):
     """Generates cropped_image using a one of the bboxes randomly distorted.

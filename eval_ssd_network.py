@@ -54,7 +54,7 @@ tf.app.flags.DEFINE_float(
 tf.app.flags.DEFINE_float(
     'matching_threshold', 0.5, 'Matching threshold with groundtruth objects.')
 tf.app.flags.DEFINE_integer(
-    'eval_resize', 4, 'Image resizing: None / CENTRAL_CROP / PAD_AND_RESIZE / WARP_RESIZE.')
+    'eval_resize', 3, 'Image resizing: None / CENTRAL_CROP / PAD_AND_RESIZE / WARP_RESIZE.')
 tf.app.flags.DEFINE_integer(
     'eval_image_size', None, 'Eval image size.')
 tf.app.flags.DEFINE_boolean(
@@ -97,7 +97,7 @@ tf.app.flags.DEFINE_float(
     'The decay to use for the moving average.'
     'If left as None, then moving averages are not used.')
 tf.app.flags.DEFINE_float(
-    'gpu_memory_fraction', 0.6, 'GPU memory fraction to use.')
+    'gpu_memory_fraction', 0.08, 'GPU memory fraction to use.')
 tf.app.flags.DEFINE_boolean(
     'wait_for_checkpoints', False, 'Wait for new checkpoints in the eval loop.')
 
@@ -171,7 +171,7 @@ def main(_):
                                        data_format=DATA_FORMAT,
                                        resize=FLAGS.eval_resize,
                                        difficults=None)
-            image = tf.reduce_mean(image, axis=-1, keepdims=True)
+            # image = tf.reduce_mean(image, axis=-1, keepdims=True)
 
             # Encode groundtruth labels and bboxes.
             gclasses, glocalisations, gscores = \
@@ -193,10 +193,10 @@ def main(_):
         # SSD Network + Ouputs decoding.
         # =================================================================== #
         dict_metrics = {}
-        arg_scope = ssd_net.arg_scope(data_format=DATA_FORMAT)
+        arg_scope = ssd_net.arg_scope(data_format=DATA_FORMAT, is_training=False)
         with slim.arg_scope(arg_scope):
             predictions, localisations, logits, end_points = \
-                ssd_net.net(b_image, is_training=False, scope="std_32")
+                ssd_net.net(b_image, is_training=False)
         # Add losses functions.
         ssd_net.losses(logits, localisations,
                        b_gclasses, b_glocalisations, b_gscores)
@@ -351,7 +351,7 @@ def main(_):
                 eval_interval_secs=60,
                 max_number_of_evaluations=np.inf,
                 session_config=config,
-                timeout=None)
+                timeout=700)
 
 
 if __name__ == '__main__':

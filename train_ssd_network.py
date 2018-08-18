@@ -63,7 +63,7 @@ tf.app.flags.DEFINE_integer(
     'save_interval_secs', 600,
     'The frequency with which the model is saved, in seconds.')
 tf.app.flags.DEFINE_float(
-    'gpu_memory_fraction', 0.9, 'GPU memory fraction to use.')
+    'gpu_memory_fraction', 0.75, 'GPU memory fraction to use.')
 
 # =========================================================================== #
 # Optimization Flags.
@@ -119,7 +119,7 @@ tf.app.flags.DEFINE_float(
 tf.app.flags.DEFINE_float(
     'learning_rate_decay_factor', 0.94, 'Learning rate decay factor.')
 tf.app.flags.DEFINE_float(
-    'num_epochs_per_decay', 2.0,
+    'num_epochs_per_decay', 8.0,
     'Number of epochs after which learning rate decays.')
 tf.app.flags.DEFINE_float(
     'moving_average_decay', None,
@@ -237,7 +237,7 @@ def main(_):
                 image_preprocessing_fn(image, glabels, gbboxes,
                                        out_shape=ssd_shape,
                                        data_format=DATA_FORMAT)
-            image = tf.reduce_mean(image, axis=0, keepdims=True)
+            # image = tf.reduce_mean(image, axis=0, keepdims=True)
             # Encode groundtruth labels and bboxes.
             gclasses, glocalisations, gscores = \
                 ssd_net.bboxes_encode(glabels, gbboxes, ssd_anchors)
@@ -274,7 +274,7 @@ def main(_):
                                           is_training=True)
             with slim.arg_scope(arg_scope):
                 predictions, localisations, logits, end_points = \
-                    ssd_net.net(b_image, is_training=True, scope='std_32')
+                    ssd_net.net(b_image, is_training=True)
             # Add loss function.
             ssd_net.losses(logits, localisations,
                            b_gclasses, b_glocalisations, b_gscores,
@@ -322,6 +322,7 @@ def main(_):
                 FLAGS.moving_average_decay, global_step)
         else:
             moving_average_variables, variable_averages = None, None
+        # variables_to_restore = slim.get_variables_to_restore()
 
         # =================================================================== #
         # Configure the optimization procedure.
@@ -365,6 +366,8 @@ def main(_):
         # =================================================================== #
         # Kicks off the training.
         # =================================================================== #
+        # config = tf.ConfigProto()
+        # config.gpu_options.allow_growth = True
         gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=FLAGS.gpu_memory_fraction)
         config = tf.ConfigProto(log_device_placement=False,
                                 gpu_options=gpu_options)

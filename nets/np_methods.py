@@ -22,7 +22,7 @@ import numpy as np
 # =========================================================================== #
 def ssd_bboxes_decode(feat_localizations,
                       anchor_bboxes,
-                      prior_scaling=[0.1, 0.1, 0.2, 0.2]):
+                      prior_scaling=[0.1, 0.1, 0.02, 0.02]):
     """Compute the relative bounding boxes from the layer features and
     reference anchor bounding boxes.
 

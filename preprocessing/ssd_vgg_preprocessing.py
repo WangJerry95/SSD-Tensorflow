@@ -42,7 +42,7 @@ _B_MEAN = 104.
 BBOX_CROP_OVERLAP = 0.5         # Minimum overlap to keep a bbox after cropping.
 MIN_OBJECT_COVERED = 0.25
 CROP_RATIO_RANGE = (0.6, 1.67)  # Distortion ratio during cropping.
-EVAL_SIZE = (512, 512)
+EVAL_SIZE = (300, 300)
 
 
 def tf_image_whitened(image, means=[_R_MEAN, _G_MEAN, _B_MEAN]):
@@ -315,8 +315,11 @@ def preprocess_for_eval(image, labels, bboxes,
         if image.get_shape().ndims != 3:
             raise ValueError('Input must be of size [height, width, C>0]')
 
-        image = tf.to_float(image)
-        image = tf_image_whitened(image, [_R_MEAN, _G_MEAN, _B_MEAN])
+        if image.dtype != tf.float32:
+            image = tf.image.convert_image_dtype(image, dtype=tf.float32)
+
+        #image = tf.to_float(image)
+
 
         # Add image rectangle to bboxes.
         bbox_img = tf.constant([[0., 0., 1., 1.]])
@@ -364,6 +367,9 @@ def preprocess_for_eval(image, labels, bboxes,
         # Image data format.
         if data_format == 'NCHW':
             image = tf.transpose(image, perm=(2, 0, 1))
+
+        image = image * 255.
+        image = tf_image_whitened(image, [_R_MEAN, _G_MEAN, _B_MEAN])
         return image, labels, bboxes, bbox_img
 
 

@@ -92,11 +92,11 @@ class SSDNet(object):
     The default image size used to train this network is 300x300.
     """
     default_params = SSDParams(
-        img_shape=(512, 512),
+        img_shape=(300, 300),
         num_classes=2,
         no_annotation_label=21,  #deprecated
         feat_layers=['block3', 'block4'],
-        feat_shapes=[(128, 128), (64, 64)],
+        feat_shapes=[(75, 75), (38, 38)],
         # anchor_size_bounds=[0.15, 0.90],
         # anchor_size_bounds=[0.20, 0.90],
         anchor_sizes=[(5., 15.),

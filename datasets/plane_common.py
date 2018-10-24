@@ -23,7 +23,7 @@ slim = tf.contrib.slim
 
 PLANE_LABELS = {
     'none': (0, 'Background'),
-    'plane': (1, 'Vehicle'),
+    'ship': (1, 'Vehicle'),
 }
 
 

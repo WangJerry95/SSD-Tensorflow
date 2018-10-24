@@ -64,7 +64,7 @@ DIRECTORY_IMAGES = 'JPEGImages/'
 
 # TFRecords convertion parameters.
 RANDOM_SEED = 4242
-SAMPLES_PER_FILES = 200
+SAMPLES_PER_FILES = 1000
 
 
 def _process_image(directory, name):
@@ -223,4 +223,4 @@ def run(dataset_dir, output_dir, name='plane_train', shuffling=False):
     # Finally, write the labels file:
     # labels_to_class_names = dict(zip(range(len(_CLASS_NAMES)), _CLASS_NAMES))
     # dataset_utils.write_label_file(labels_to_class_names, dataset_dir)
-    print('\nFinished converting the Pascal PLANE dataset!')
+    print('\nFinished converting the sea_ship dataset!')

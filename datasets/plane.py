@@ -19,7 +19,7 @@ from datasets import plane_common
 
 slim = tf.contrib.slim
 
-FILE_PATTERN = 'plane_%s_*.tfrecord'
+FILE_PATTERN = 'seaship_%s_*.tfrecord'
 ITEMS_TO_DESCRIPTIONS = {
     'image': 'A color image of varying height and width.',
     'shape': 'Shape of the image',
@@ -28,8 +28,8 @@ ITEMS_TO_DESCRIPTIONS = {
 }
 
 SPLITS_TO_SIZES = {
-    'train': 660,
-    'test': 340,
+    'train': 8000,
+    'test': 2000,
 }
 
 

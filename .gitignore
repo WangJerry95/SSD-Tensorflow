@@ -22,3 +22,13 @@ nohup.out
 ssd-tensorflow.sublime-workspace
 ssd-tensorflow.sublime-project
 
+datasets/*tfrecords/
+datasets/sea_ship
+datasets/myplane
+demo/kitti/
+demo/plane/
+demo/seaship/
+
+.idea/
+checkpoints
+
